@@ -3,23 +3,33 @@ name: Deploy Frontend to GitHub Pages
 on:
   push:
     branches:
-      - main
+      - main # Acesta este branch-ul pe care se va face deploy la push
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest # Folosim un runner Ubuntu pe GitHub Actions
+
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v3 # Check-out repo-ul
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3 # Instalare Node.js pe runner
+        with:
+          node-version: "16" # Specificăm versiunea de Node.js
 
       - name: Install dependencies
         run: |
-          cd frontend
-          npm install
-          npm run build
+          cd frontend      # Mergem în folderul frontend
+          npm install      # Instalăm dependențele npm
+
+      - name: Build frontend
+        run: |
+          cd frontend      # Mergem în folderul frontend
+          npm run build    # Construim proiectul (vite va salva fișierele în dist/)
 
       - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
+        uses: peaceiris/actions-gh-pages@v3 # Folosim acțiunea gh-pages
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: frontend/dist
+          github_token: ${{ secrets.GITHUB_TOKEN }} # Token-ul GitHub pentru autentificare
+          publish_dir: frontend/dist # Folderul care conține fișierele construite
