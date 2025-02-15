@@ -16,7 +16,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: "18.x" # Actualizează la o versiune compatibilă
+          node-version: "16" # Actualizează la o versiune compatibilă
 
       - name: Install dependencies
         run: |
