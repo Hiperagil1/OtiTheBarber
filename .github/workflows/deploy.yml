@@ -24,7 +24,7 @@ jobs:
       - name: Install dependencies
         run: |
           cd frontend      # Mergem în folderul frontend
-          npm install      # Instalăm dependențele npm
+          npm install --legacy-peer-deps  # Instalăm dependențele ignorând conflictele de peer dependency
 
       - name: Build frontend
         run: |
