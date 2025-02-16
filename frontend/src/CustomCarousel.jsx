@@ -59,13 +59,24 @@ const Carousel3D = ({ items }) => {
     setCurrentIndex((prevIndex) => prevIndex === items.length - 1 ? 0 : prevIndex + 1);
   }, [items.length]);
 
-  const handleWheel = useCallback((event) => {
-    if (event.deltaY > 0) {
-      rotateRight();
-    } else {
-      rotateLeft();
-    }
+  const handleWheel = useCallback(() => {
+    let timeoutId = null;
+  
+    return (event) => {
+      if (timeoutId) return;
+  
+      if (event.deltaY > 0) {
+        rotateRight();
+      } else {
+        rotateLeft();
+      }
+  
+      timeoutId = setTimeout(() => {
+        timeoutId = null;
+      }, 300); // Interval de 300ms pentru a preveni mișcările rapide
+    };
   }, [rotateLeft, rotateRight]);
+  
 
   const handleTouchStart = (e) => {
     setTouchStart(e.targetTouches[0].clientX);
@@ -91,10 +102,27 @@ const Carousel3D = ({ items }) => {
   };
 
   useEffect(() => {
+    const debouncedHandleWheel = handleWheel();
+    window.addEventListener("wheel", debouncedHandleWheel);
+  
+    return () => {
+      window.removeEventListener("wheel", debouncedHandleWheel);
+    };
+  }, [handleWheel]);
+  
+
+  useEffect(() => {
     const container = document.querySelector(".carousel-container");
     container.addEventListener("wheel", handleWheel);
     return () => container.removeEventListener("wheel", handleWheel);
   }, [handleWheel]);
+
+  useEffect(() => {
+    if (currentIndex >= items.length) {
+      setCurrentIndex(0);
+    }
+  }, [items.length]);
+  
 
   const getRotation = (index) => {
     const totalCards = items.length;
